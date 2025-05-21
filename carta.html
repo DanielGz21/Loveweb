@@ -121,18 +121,18 @@
     }
   </style>
 </head>
-<body class="bg-gradient-to-b from-pink-100 via-white to-pink-50 min-h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden">
+<body class="bg-gradient-to-b from-pink-100 via-white to-pink-50 min-h-screen flex flex-col items-center justify-center text-center px-4 sm:px-6 overflow-hidden">
 
   <!-- Loader de amor -->
   <div id="love-loader">
-    <h2 class="text-5xl font-extrabold text-red-500 mb-6 tracking-widest">TE AMO</h2>
+    <h2 class="text-3xl sm:text-5xl font-extrabold text-red-500 mb-6 tracking-widest">TE AMO</h2>
     <div class="relative w-[320px] max-w-full mb-4">
       <div class="w-full h-10 rounded-full border-4 border-red-300 flex items-center px-2 bg-white overflow-hidden relative">
         <div id="hearts-bar" class="flex transition-all duration-700"></div>
         <span id="love-percent" class="absolute right-4 text-red-500 font-bold">0%</span>
       </div>
     </div>
-    <span class="text-xl text-red-400 tracking-widest mt-2 animate-pulse">LOADING...</span>
+    <span class="text-base sm:text-lg sm:text-xl text-red-400 tracking-widest mt-2 animate-pulse">LOADING...</span>
   </div>
 
   <!-- Corazones flotando -->
@@ -146,14 +146,14 @@
 
   <!-- Animación de carta -->
   <div id="envelope" class="flex flex-col items-center opacity-0">
-    <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-pink-300 shadow-lg mb-6 animate-pulse hover:scale-105 transition-transform duration-300">
+    <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-pink-300 shadow-lg mb-6 animate-pulse hover:scale-105 transition-transform duration-300">
       <img src="assets/img/carta.jpg" alt="Nosotros" class="w-full h-full object-cover" />
     </div>
-    <h1 class="text-5xl font-bold text-pink-700 mb-6 animate-pulse">🌹 Para la persona más especial 🌹</h1>
-    <div class="max-w-2xl bg-white p-8 rounded-3xl shadow-xl space-y-4 text-lg text-pink-900 leading-relaxed relative">
+    <h1 class="text-3xl sm:text-5xl font-bold text-pink-700 mb-6 animate-pulse">🌹 Para la persona más especial 🌹</h1>
+    <div class="max-w-md sm:max-w-2xl bg-white p-4 sm:p-8 rounded-xl sm:rounded-3xl shadow-xl space-y-4 text-base sm:text-lg text-pink-900 leading-relaxed relative">
       <!-- Corazones animados sobre la carta -->
       <span class="absolute left-4 top-4 text-2xl animate-bounce">💖</span>
-      <span class="absolute right-8 top-2 text-xl animate-pulse">💕</span>
+      <span class="absolute right-8 top-2 text-base sm:text-lg sm:text-xl animate-pulse">💕</span>
       <span class="absolute left-1/2 -translate-x-1/2 bottom-4 text-3xl animate-bounce">❤️</span>
       <p class="handwriting text-2xl text-pink-700">Amor mío,</p>
       <p>
@@ -166,13 +166,13 @@
         Eres mi corazón latiendo, mi mejor amiga, mi inspiración diaria... y no cambiaría ni un segundo contigo.
       </p>
       <p class="font-semibold text-pink-600">Gracias por estos 7 meses. Por muchos más juntos. 💘</p>
-      <div class="mt-8 text-right font-bold text-pink-700 text-xl handwriting">
+      <div class="mt-8 text-right font-bold text-pink-700 text-base sm:text-lg sm:text-xl handwriting">
         Con todo mi amor,<br>
         Daniel G💕
       </div>
     </div>
     <!-- Botón de audio romántico -->
-    <button id="play-audio" class="mt-6 bg-pink-600 text-white px-6 py-3 rounded-full shadow hover:bg-pink-700 transition text-lg flex items-center gap-2" aria-label="Reproducir o pausar canción especial">
+    <button id="play-audio" class="mt-6 bg-pink-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full shadow hover:bg-pink-700 transition text-base sm:text-lg flex items-center gap-2" aria-label="Reproducir o pausar canción especial">
       <span>Escuchar: "Mi Refe"</span>
       <svg id="audio-icon" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path id="audio-icon-path" stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-6.518-3.759A1 1 0 007 8.118v7.764a1 1 0 001.234.97l6.518-1.757A1 1 0 0016 14.882V7.118a1 1 0 00-1.248-.95z" />
@@ -181,7 +181,7 @@
     <audio id="romantic-audio" src="assets/audio/Mi_Refe.mp3"></audio>
   </div>
 
-  <a id="back-link" href="index.html" class="mt-8 text-pink-600 hover:underline text-lg transition duration-300">⟵ Volver al inicio</a>
+  <a id="back-link" href="index.html" class="mt-8 text-pink-600 hover:underline text-base sm:text-lg transition duration-300">⟵ Volver al inicio</a>
 
   <script>
     // Animación de apertura de sobre y carta
