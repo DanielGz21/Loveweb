@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Te amo ❤️</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .indicator-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #f9a8d4;
+      opacity: 0.5;
+      border: 2px solid #fbcfe8;
+      transition: opacity 0.3s, background 0.3s;
+      cursor: pointer;
+      margin: 0 1px;
+      outline: none;
+    }
+    .indicator-dot.active {
+      opacity: 1;
+      background: #ec4899;
+      border-color: #f472b6;
+      box-shadow: 0 0 0 2px #fbcfe8;
+    }
+    @media (max-width: 600px) {
+      #carousel-image {
+        min-height: 260px !important;
+        max-height: 380px !important;
+      }
+      .aspect-\[4\/5\] {
+        aspect-ratio: 3/4 !important;
+      }
+    }
+    @media (max-width: 600px) {
+      #mapa-recuerdos iframe {
+        height: 340px !important;
+      }
+    }
+    @media (max-width: 600px) {
+      #carousel-caption {
+        font-size: 1.05rem !important;
+        padding: 0.5rem 0.2rem;
+      }
+      .max-w-md {
+        max-width: 98vw !important;
+      }
+      .max-w-xs, .sm\:max-w-md {
+        max-width: 95vw !important;
+      }
+      .rounded-3xl, .rounded-2xl {
+        border-radius: 1.2rem !important;
+      }
+      .p-6, .sm\:p-8 {
+        padding: 1.2rem !important;
+      }
+      .px-6, .sm\:px-8 {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+      }
+      .py-3, .sm\:py-4 {
+        padding-top: 0.7rem !important;
+        padding-bottom: 0.7rem !important;
+      }
+      .text-3xl, .sm\:text-5xl {
+        font-size: 2rem !important;
+      }
+      .text-xl, .sm\:text-xl {
+        font-size: 1.1rem !important;
+      }
+    }
+    @media (max-width: 400px) {
+      #carousel-image {
+        min-height: 120px;
+        max-height: 180px;
+      }
+      .max-w-md, .max-w-xs, .sm\:max-w-md {
+        max-width: 99vw !important;
+      }
+      .rounded-3xl, .rounded-2xl {
+        border-radius: 0.7rem !important;
+      }
+      .p-6, .sm\:p-8 {
+        padding: 0.7rem !important;
+      }
+      .px-6, .sm\:px-8 {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+      }
+      .py-3, .sm\:py-4 {
+        padding-top: 0.4rem !important;
+        padding-bottom: 0.4rem !important;
+      }
+      .text-3xl, .sm\:text-5xl {
+        font-size: 1.2rem !important;
+      }
+      .text-xl, .sm\:text-xl {
+        font-size: 0.95rem !important;
+      }
+    }
+    @media (max-width: 800px) {
+      #mapa-recuerdos iframe {
+        height: 220px !important;
+      }
+      #timeline {
+        padding: 1rem !important;
+      }
+    }
+    @media (max-width: 600px) {
+      #love-counter {
+        top: 0.5rem !important;
+        right: 0.5rem !important;
+        font-size: 0.95rem !important;
+        padding: 0.3rem 0.7rem !important;
+      }
+      #night-mode-btn {
+        bottom: 1rem !important;
+        right: 1rem !important;
+        padding: 0.8rem !important;
+      }
+    }
+    body.night-mode {
+      background: linear-gradient(180deg, #181c2a 0%, #232946 100%) !important;
+      color: #e0e7ef !important;
+      transition: background 0.8s, color 0.5s;
+    }
+    body.night-mode header,
+    body.night-mode .bg-white\/80,
+    body.night-mode .bg-white,
+    body.night-mode .bg-pink-100,
+    body.night-mode .bg-pink-200 {
+      background: rgba(36, 41, 61, 0.92) !important;
+      color: #e0e7ef !important;
+      border-color: #7f9cf5 !important;
+    }
+    body.night-mode .text-pink-700,
+    body.night-mode .text-pink-900,
+    body.night-mode .text-pink-500,
+    body.night-mode .text-pink-800 {
+      color: #fbcfe8 !important;
+    }
+    body.night-mode .border-pink-200 {
+      border-color: #7f9cf5 !important;
+    }
+    body.night-mode .shadow-lg,
+    body.night-mode .shadow-2xl {
+      box-shadow: 0 4px 32px 0 #7f9cf555 !important;
+    }
+    body.night-mode #carousel-caption {
+      background: rgba(36, 41, 61, 0.85) !important;
+      color: #fbcfe8 !important;
+    }
+    body.night-mode #love-counter {
+      background: rgba(36, 41, 61, 0.92) !important;
+      color: #fbcfe8 !important;
+      border-color: #7f9cf5 !important;
+    }
+    body.night-mode #mapa-recuerdos {
+      background: rgba(36, 41, 61, 0.92) !important;
+      border-color: #7f9cf5 !important;
+    }
+    body.night-mode .indicator-dot {
+      background: #7f9cf5 !important;
+      border-color: #fbcfe8 !important;
+    }
+    body.night-mode .indicator-dot.active {
+      background: #fbcfe8 !important;
+      border-color: #7f9cf5 !important;
+    }
+    body.night-mode .fixed.inset-0.pointer-events-none.z-0 span {
+      filter: brightness(0.7) grayscale(0.7);
+      opacity: 0.10 !important;
+    }
+    body.night-mode .rounded-3xl,
+    body.night-mode .rounded-2xl {
+      background: rgba(36, 41, 61, 0.92) !important;
+      border-color: #7f9cf5 !important;
+    }
+    body.night-mode .bg-pink-600,
+    body.night-mode .bg-pink-700,
+    body.night-mode .bg-pink-800 {
+      background: #7f9cf5 !important;
+      color: #fbcfe8 !important;
+    }
+    body.night-mode .hover\:bg-pink-700:hover,
+    body.night-mode .hover\:bg-pink-800:hover,
+    body.night-mode .hover\:bg-pink-300:hover {
+      background: #a5b4fc !important;
+      color: #232946 !important;
+    }
+    body.night-mode .border-pink-300 {
+      border-color: #a5b4fc !important;
+    }
+    body.night-mode .font-bold,
+    body.night-mode .font-semibold {
+      color: #fbcfe8 !important;
+    }
+    body.night-mode .bg-white\/60,
+    body.night-mode .bg-white\/90,
+    body.night-mode .bg-white\/80 {
+      background: rgba(36, 41, 61, 0.85) !important;
+      color: #e0e7ef !important;
+    }
+    body.night-mode .text-base,
+    body.night-mode .text-xl,
+    body.night-mode .text-3xl,
+    body.night-mode .text-5xl {
+      color: #e0e7ef !important;
+    }
+    body.night-mode .border-white {
+      border-color: #7f9cf5 !important;
+    }
+    body.night-mode .bg-pink-400 {
+      background: #a5b4fc !important;
+    }
+    body.night-mode .bg-pink-50 {
+      background: #232946 !important;
+    }
+    body.night-mode .bg-gradient-to-b {
+      background: linear-gradient(180deg, #181c2a 0%, #232946 100%) !important;
+    }
+    body.night-mode .bg-gradient-to-br {
+      background: linear-gradient(135deg, #232946 0%, #181c2a 100%) !important;
+    }
+    body.night-mode .text-red-500,
+    body.night-mode .text-red-400 {
+      color: #fca5a5 !important;
+    }
+    body.night-mode .border-red-300 {
+      border-color: #fca5a5 !important;
+    }
+    body.night-mode .bg-white {
+      background: #232946 !important;
+      color: #e0e7ef !important;
+    }
+    body.night-mode .bg-white\/80 {
+      background: rgba(36, 41, 61, 0.92) !important;
+      color: #e0e7ef !important;
+    }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #f9fafb;
+      color: #111827;
+      line-height: 1.6;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin: 0;
+      padding: 0;
+      font-weight: 600;
+      color: #111827;
+    }
+    h1 {
+      font-size: 2.25rem;
+      line-height: 2.5rem;
+    }
+    h2 {
+      font-size: 1.875rem;
+      line-height: 2.25rem;
+    }
+    h3 {
+      font-size: 1.625rem;
+      line-height: 2rem;
+    }
+    h4 {
+      font-size: 1.375rem;
+      line-height: 1.75rem;
+    }
+    h5 {
+      font-size: 1.125rem;
+      line-height: 1.5rem;
+    }
+    h6 {
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+    }
+    p {
+      margin: 0 0 1rem 0;
+      color: #374151;
+    }
+    a {
+      color: #3b82f6;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    a:hover {
+      color: #2563eb;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    li {
+      margin: 0 0 0.5rem 0;
+      padding: 0;
+    }
+    /* Estilos para el loader de página */
+    #page-loader {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(249, 169, 212, 0.95);
+      z-index: 9999;
+      transition: opacity 0.5s;
+      opacity: 0;
+      pointer-events: none;
+    }
+    #page-loader.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+    #page-loader h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #dc2626;
+      margin-bottom: 1rem;
+      letter-spacing: 0.1em;
+      text-align: center;
+    }
+    #page-loader .bar {
+      width: 80%;
+      max-width: 400px;
+      height: 8px;
+      border-radius: 4px;
+      background-color: #fff;
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 1rem;
+    }
+    #page-loader .heart {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      background-color: #f472b6;
+      clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+      animation: beat 1.5s infinite;
+    }
+    #page-loader .heart::before,
+    #page-loader .heart::after {
+      content: '';
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      background-color: #f472b6;
+      border-radius: 50%;
+    }
+    #page-loader .heart::before {
+      top: -12px;
+      left: 0;
+    }
+    #page-loader .heart::after {
+      left: 12px;
+      top: 0;
+    }
+    @keyframes beat {
+      0%, 20%, 50%, 80%, 100% {
+        transform: scale(1);
+      }
+      10%, 30%, 60%, 90% {
+        transform: scale(1.1);
+      }
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-b from-pink-50 to-pink-100 text-center font-sans min-h-screen flex flex-col">
+  <main class="flex-1 w-full">
+    <!-- Encabezado -->
+    <header class="bg-pink-300 p-6 sm:p-8 shadow-lg rounded-b-lg" role="banner">
+      <h1 class="text-3xl sm:text-5xl font-extrabold text-pink-900 leading-tight break-words">💘 7 Meses de Amor 💘</h1>
+      <p class="text-pink-800 mt-2 sm:mt-3 text-base sm:text-lg max-w-xs mx-auto leading-snug">Cada momento contigo es un sueño hecho realidad.</p>
+    </header>
+
+    <!-- Frase romántica -->
+    <p class="mt-4 text-pink-500 text-base sm:text-xl handwriting max-w-xs mx-auto leading-snug tracking-wide break-words">
+      "Contigo, cada día es el mejor de mi vida."
+    </p>
+
+    <!-- Fondo animado con emojis -->
+    <div class="fixed inset-0 pointer-events-none z-0">
+      <span class="absolute left-8 top-12 text-4xl opacity-10">💖</span>
+      <span class="absolute right-10 bottom-16 text-5xl opacity-10">💞</span>
+      <span class="absolute left-1/2 top-1/3 text-6xl opacity-5">🌹</span>
+    </div>
+
+    <!-- Flecha de carga animada -->
+    <div class="flex justify-center mt-4 animate-bounce">
+      <svg class="w-8 h-8 text-pink-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+      </svg>
+    </div>
+
+    <!-- Carrusel de recuerdos -->
+    <section class="mt-10 flex flex-col items-center" aria-label="Galería de recuerdos">
+      <div class="relative max-w-md w-full mx-auto rounded-3xl overflow-hidden shadow-2xl bg-white/80 border-4 border-pink-200">
+        <!-- Imagen principal con mejor dimensionado -->
+        <div class="w-full aspect-[4/5] bg-gradient-to-br from-pink-100 to-pink-200 flex items-center justify-center overflow-hidden rounded-2xl shadow-lg border-2 border-pink-100">
+          <picture>
+            <source id="carousel-source-webp" srcset="assets/img/recuerdo1.webp" type="image/webp">
+            <img
+              id="carousel-image"
+              src="assets/img/recuerdo1.jpg"
+              alt="Nuestro primer 'te amo' 💖"
+              class="w-full h-full object-cover object-center transition-all duration-700"
+              loading="lazy"
+              style="background: linear-gradient(135deg,#f9a8d4 0%,#fbcfe8 100%);"
+            />
+          </picture>
+        </div>
+        <!-- Flechas -->
+        <button
+          id="prev-btn"
+          class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-pink-100 text-pink-500 rounded-full p-2 shadow transition z-10"
+          aria-label="Anterior"
+          type="button"
+          tabindex="0"
+        >
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <button
+          id="next-btn"
+          class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-pink-100 text-pink-500 rounded-full p-2 shadow transition z-10"
+          aria-label="Siguiente"
+          type="button"
+          tabindex="0"
+        >
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+        <!-- Pie de foto elegante y profesional -->
+        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 w-[96%] max-w-xs sm:max-w-md">
+          <div class="bg-white/60 backdrop-blur-lg border border-pink-200 shadow-2xl rounded-2xl px-3 py-3 sm:px-6 sm:py-4 flex items-center justify-center animate-fade-in-glass">
+            <span id="carousel-caption"
+              class="text-pink-700 font-semibold text-base sm:text-xl handwriting tracking-wide drop-shadow-lg leading-snug w-full block text-center select-none break-words"
+              style="letter-spacing:0.02em; text-shadow:0 2px 8px #fff6,0 1px 0 #fff;">
+            </span>
+          </div>
+        </div>
+        <!-- Indicadores -->
+        <div id="carousel-indicators" class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1"></div>
+      </div>
+    </section>
+
+    <!-- Contador de días juntos interactivo -->
+    <div id="love-counter-toggle" class="fixed bottom-4 left-4 z-50 flex flex-col items-start gap-2">
+      <button id="toggle-counter-btn"
+        class="bg-white/90 border border-pink-200 rounded-full shadow p-2 flex items-center justify-center hover:bg-pink-100 transition group focus:outline-none"
+        aria-label="Mostrar/Ocultar contador de días juntos">
+        <svg id="counter-eye" class="w-5 h-5 text-pink-500 group-hover:text-pink-700 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path id="eye-open" stroke-linecap="round" stroke-linejoin="round" d="M1.5 12s4-7.5 10.5-7.5S22.5 12 22.5 12s-4 7.5-10.5 7.5S1.5 12 1.5 12z"/>
+          <circle id="eye-ball" cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        <span class="ml-2 text-xs text-pink-700 font-semibold hidden sm:inline">Ver tiempo</span>
+      </button>
+      <div id="love-counter"
+        class="bg-white/80 rounded-lg shadow px-3 py-1 border border-pink-200 text-pink-700 font-semibold text-xs sm:text-sm flex items-center gap-1 pointer-events-auto transition-all duration-300 opacity-100"
+        style="min-width: 120px;">
+        <svg class="w-4 h-4 mr-1 text-pink-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 21C12 21 4 13.5 4 8.5C4 5.5 6.5 3 9.5 3C11.04 3 12.5 4.04 13 5.35C13.5 4.04 14.96 3 16.5 3C19.5 3 22 5.5 22 8.5C22 13.5 12 21 12 21Z"/>
+        </svg>
+        <span>Juntos hace:</span>
+        <span id="counter-days"></span>
+      </div>
+    </div>
+
+    <!-- Constelación de corazones animada -->
+    <canvas id="hearts-constellation" class="fixed inset-0 w-full h-full z-0 pointer-events-none"></canvas>
+
+    <!-- Filtro de recuerdos -->
+    <div class="mt-8 flex justify-center gap-2 flex-wrap">
+      <button class="filter-btn bg-pink-200 text-pink-700 px-3 py-1 rounded-full font-semibold hover:bg-pink-300 transition" data-filter="all">Todos</button>
+      <button class="filter-btn bg-pink-200 text-pink-700 px-3 py-1 rounded-full font-semibold hover:bg-pink-300 transition" data-filter="playa">Playa</button>
+      <button class="filter-btn bg-pink-200 text-pink-700 px-3 py-1 rounded-full font-semibold hover:bg-pink-300 transition" data-filter="familia">Familia</button>
+      <button class="filter-btn bg-pink-200 text-pink-700 px-3 py-1 rounded-full font-semibold hover:bg-pink-300 transition" data-filter="aventura">Aventura</button>
+      <button class="filter-btn bg-pink-200 text-pink-700 px-3 py-1 rounded-full font-semibold hover:bg-pink-300 transition" data-filter="romantico">Romántico</button>
+    </div>
+
+    <!-- Mapa interactivo de recuerdos (ahora más grande y responsivo) -->
+    <div class="mt-10 flex justify-center">
+      <div id="mapa-recuerdos" class="w-full max-w-4xl rounded-2xl shadow-lg border-2 border-pink-200 overflow-hidden">
+        <iframe src="https://www.google.com/maps/d/embed?mid=13Se5RjWvgzgFVYtnNmn_K_G3oZBlQMM&ehbc=2E312F"
+          width="100%" height="700" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+      </div>
+    </div>
+
+    <!-- Timeline de hitos -->
+    <div class="mt-12 flex justify-center">
+      <div id="timeline" class="w-full max-w-xl bg-white/80 rounded-2xl shadow-lg p-6 border-2 border-pink-200">
+        <h3 class="text-pink-700 font-bold text-xl mb-4">Nuestra historia</h3>
+        <ul id="timeline-list" class="relative pl-4">
+          <!-- Timeline items se llenan por JS -->
+        </ul>
+      </div>
+    </div>
+
+    <!-- Botón modo noche sin velas -->
+    <button id="night-mode-btn" class="fixed bottom-6 right-6 bg-pink-700 text-white rounded-full p-4 shadow-lg z-50 hover:bg-pink-800 transition" aria-label="Activar modo noche">
+      🌙
+    </button>
+
+    <!-- Botón de corazón con sonido de latido -->
+    <div class="flex justify-center mt-8">
+      <button id="love-heart-btn" class="bg-pink-600 hover:bg-pink-700 text-white rounded-full p-5 shadow-lg text-3xl transition-all duration-300 animate-bounce focus:outline-none" aria-label="Latido de amor">
+        ❤️
+      </button>
+      <audio id="heartbeat-audio" src="assets/audio/latido.mp3"></audio>
+    </div>
+
+    <!-- Botón de carta secreta -->
+    <div class="flex justify-center mt-4">
+      <a href="login.html"
+        class="bg-pink-700 text-white px-6 py-3 rounded-full hover:bg-pink-800 transition duration-300 shadow-lg text-base font-semibold"
+        id="secret-letter-btn">
+        💌 Carta secreta
+      </a>
+    </div>
+
+    <!-- Loader de amor para transición a carta secreta -->
+    <div id="love-loader" class="fixed inset-0 flex flex-col items-center justify-center bg-pink-50 bg-opacity-95 z-[9999] transition-opacity duration-500 opacity-0 pointer-events-none" style="display:none;">
+      <h2 class="text-5xl font-extrabold text-red-500 mb-6 tracking-widest text-center">TE AMO</h2>
+      <div class="relative w-80 max-w-full mb-4">
+        <div class="w-full h-8 rounded-full border-4 border-red-300 px-2 bg-white overflow-hidden relative flex items-center">
+          <div id="hearts-bar" class="flex items-center h-full absolute left-0 top-0 transition-all duration-700" style="height: 100%; width: 0%; z-index:2;"></div>
+          <div id="hearts-bg" class="absolute left-0 top-0 w-full h-full flex items-center z-0"></div>
+          <span id="love-percent" class="absolute right-4 text-red-500 font-bold z-10">0%</span>
+        </div>
+      </div>
+      <span class="text-xl text-red-400 tracking-widest mt-2 animate-pulse text-center">LOADING...</span>
+    </div>
+  </main>
+
+  <script>
+    // Carrusel
+    const images = [
+      { src: "assets/img/recuerdo1.jpg", caption: "Nuestro primer 'te amo' 💖" },
+      { src: "assets/img/recuerdo2.jpg", caption: "Beso en Playa 💏🌴" },
+      { src: "assets/img/recuerdo3.jpg", caption: "Noche perfecta en playa 🌴" },
+      { src: "assets/img/recuerdo4.jpg", caption: "Calma en el alma ❤️" },
+      { src: "assets/img/recuerdo5.jpg", caption: "Un abrazo que lo curó todo 🤗" },
+      { src: "assets/img/recuerdo6.jpg", caption: "Noche de locura 🤪" },
+      { src: "assets/img/recuerdo7.jpg", caption: "Mi mejor compañia 🫶" },
+      { src: "assets/img/recuerdo8.jpg", caption: "Nuestro rincón favorito ❤️" },
+      { src: "assets/img/recuerdo9.jpg", caption: "Nuestro deseo 🙏" },
+      { src: "assets/img/recuerdo10.jpg", caption: "Pasando el rato juntos 🍻" },
+      { src: "assets/img/recuerdo11.jpg", caption: "Un beso inesperado 😘" },
+      { src: "assets/img/recuerdo12.jpg", caption: "Amanecer contigo 🌅" },
+      { src: "assets/img/recuerdo13.jpg", caption: "Quilla City🕺" },
+      { src: "assets/img/recuerdo14.jpg", caption: "Noche en Familia" },
+      { src: "assets/img/recuerdo15.jpg", caption: "Noche de juegos y diversión 🎲" },
+      { src: "assets/img/recuerdo16.jpg", caption: "Nuestra película favorita juntos 🎬" },
+      { src: "assets/img/recuerdo17.jpg", caption: "Amanecer contigo 🌅" },
+      { src: "assets/img/recuerdo18.jpg", caption: "Nuestro rincón favorito ❤️" },
+      { src: "assets/img/recuerdo19.jpg", caption: "Estar a tu lado" },
+      { src: "assets/img/recuerdo20.jpg", caption: "Tus ojos son mis estrellas" },
+      { src: "assets/img/recuerdo21.jpg", caption: "Mi alma esta contigo" },
+      { src: "assets/img/recuerdo22.jpg", caption: "Eres mi felicidad" },
+      { src: "assets/img/recuerdo23.jpg", caption: "Mar, arena y tus Besos ❤️" },
+      { src: "assets/img/recuerdo24.jpg", caption: "Un día de sorpresas 🎉" },
+      { src: "assets/img/recuerdo25.jpg", caption: "Amor con altura 📸" },
+      { src: "assets/img/recuerdo26.jpg", caption: "Un día solo para nosotros 🥰" },
+      { src: "assets/img/recuerdo27.jpg", caption: "El mejor final feliz... ¡contigo! 💍" }
+    ];
+    let current = 0;
+    const img = document.getElementById("carousel-image");
+    const caption = document.getElementById("carousel-caption");
+    const prevBtn = document.getElementById("prev-btn");
+    const nextBtn = document.getElementById("next-btn");
+    const indicators = document.getElementById("carousel-indicators");
+    let intervalId;
+
+    function renderIndicators() {
+      indicators.innerHTML = "";
+      images.forEach((_, idx) => {
+        const dot = document.createElement("button");
+        dot.className = "indicator-dot" + (idx === current ? " active" : "");
+        dot.setAttribute("aria-label", `Ir a la imagen ${idx + 1}`);
+        dot.onclick = () => {
+          current = idx;
+          showImage(current);
+          resetInterval();
+        };
+        indicators.appendChild(dot);
+      });
+    }
+
+    function showImage(index) {
+      img.classList.remove("animate-fade-in");
+      setTimeout(() => {
+        document.getElementById("carousel-source-webp").srcset = images[index].src.replace('.jpg', '.webp');
+        img.src = images[index].src;
+        img.alt = images[index].caption;
+        caption.textContent = images[index].caption;
+        img.classList.add("animate-fade-in");
+        renderIndicators();
+      }, 50);
+    }
+
+    function prevImage() {
+      current = (current - 1 + images.length) % images.length;
+      showImage(current);
+      resetInterval();
+    }
+
+    function nextImage() {
+      current = (current + 1) % images.length;
+      showImage(current);
+      resetInterval();
+    }
+
+    function resetInterval() {
+      clearInterval(intervalId);
+      intervalId = setInterval(() => {
+        nextImage();
+      }, 3500);
+    }
+
+    prevBtn.addEventListener("click", prevImage);
+    nextBtn.addEventListener("click", nextImage);
+
+    intervalId = setInterval(() => {
+      nextImage();
+    }, 3500);
+
+    showImage(0);
+
+    // Contador de días juntos (ajustado para formato compacto)
+    function updateLoveCounter() {
+      const startDate = new Date("2024-10-20T00:00:00"); // Cambia a tu fecha especial
+      const now = new Date();
+      const diff = now - startDate;
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = now.getHours().toString().padStart(2, "0");
+      const minutes = now.getMinutes().toString().padStart(2, "0");
+      document.getElementById("counter-days").textContent = `${days}d ${hours}:${minutes}`;
+    }
+    setInterval(updateLoveCounter, 1000);
+    updateLoveCounter();
+
+    // Interactividad para mostrar/ocultar el contador
+    const counterDiv = document.getElementById('love-counter');
+    const toggleBtn = document.getElementById('toggle-counter-btn');
+    const eyeIcon = document.getElementById('counter-eye');
+    let counterVisible = true;
+
+    toggleBtn.addEventListener('click', () => {
+      counterVisible = !counterVisible;
+      if (counterVisible) {
+        counterDiv.classList.remove('opacity-0', 'pointer-events-none', 'scale-90');
+        counterDiv.classList.add('opacity-100', 'pointer-events-auto', 'scale-100');
+        // Cambia a ojo abierto
+        eyeIcon.innerHTML = `
+          <path id="eye-open" stroke-linecap="round" stroke-linejoin="round" d="M1.5 12s4-7.5 10.5-7.5S22.5 12 22.5 12s-4 7.5-10.5 7.5S1.5 12 1.5 12z"/>
+          <circle id="eye-ball" cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="2"/>
+        `;
+      } else {
+        counterDiv.classList.remove('opacity-100', 'pointer-events-auto', 'scale-100');
+        counterDiv.classList.add('opacity-0', 'pointer-events-none', 'scale-90');
+        // Cambia a ojo cerrado (línea cruzada)
+        eyeIcon.innerHTML = `
+          <path id="eye-open" stroke-linecap="round" stroke-linejoin="round" d="M1.5 12s4-7.5 10.5-7.5S22.5 12 22.5 12s-4 7.5-10.5 7.5S1.5 12 1.5 12z"/>
+          <circle id="eye-ball" cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="2"/>
+          <line x1="4" y1="20" x2="20" y2="4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        `;
+      }
+    });
+
+    // Constelación de corazones animada
+    const canvas = document.getElementById('hearts-constellation');
+    const ctx = canvas.getContext('2d');
+    let hearts = [];
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    function randomHeart() {
+      return {
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: 10 + Math.random() * 10,
+        dx: (Math.random() - 0.5) * 0.5,
+        dy: (Math.random() - 0.5) * 0.5,
+        color: "#f472b6"
+      };
+    }
+    for (let i = 0; i < 30; i++) hearts.push(randomHeart());
+    function drawHearts() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < hearts.length; i++) {
+        for (let j = i + 1; j < hearts.length; j++) {
+          const dx = hearts[i].x - hearts[j].x;
+          const dy = hearts[i].y - hearts[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 120) {
+            ctx.strokeStyle = "#fbcfe8";
+            ctx.globalAlpha = 0.2;
+            ctx.beginPath();
+            ctx.moveTo(hearts[i].x, hearts[i].y);
+            ctx.lineTo(hearts[j].x, hearts[j].y);
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+          }
+        }
+      }
+      hearts.forEach(h => {
+        ctx.font = `${h.r * 1.5}px serif`;
+        ctx.fillStyle = h.color;
+        ctx.fillText("❤", h.x, h.y);
+      });
+    }
+    function animateHearts() {
+      hearts.forEach(h => {
+        h.x += h.dx;
+        h.y += h.dy;
+        if (h.x < 0 || h.x > canvas.width) h.dx *= -1;
+        if (h.y < 0 || h.y > canvas.height) h.dy *= -1;
+      });
+      drawHearts();
+      requestAnimationFrame(animateHearts);
+    }
+    animateHearts();
+
+    // Filtro de recuerdos por emoción
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const imagesData = [
+      { src: "assets/img/recuerdo1.jpg", caption: "Nuestro primer 'te amo' 💖", tag: "romantico" },
+      { src: "assets/img/recuerdo2.jpg", caption: "Beso en Playa 💏🌴", tag: "playa" },
+      { src: "assets/img/recuerdo3.jpg", caption: "Noche perfecta en playa 🌴", tag: "playa" },
+      { src: "assets/img/recuerdo4.jpg", caption: "Calma en el alma ❤️", tag: "romantico" },
+      { src: "assets/img/recuerdo5.jpg", caption: "Un abrazo que lo curó todo 🤗", tag: "familia" },
+      { src: "assets/img/recuerdo6.jpg", caption: "Noche de locura 🤪", tag: "aventura" },
+      { src: "assets/img/recuerdo7.jpg", caption: "Mi mejor compañia 🫶" },
+      { src: "assets/img/recuerdo8.jpg", caption: "Nuestro rincón favorito ❤️", tag: "romantico" },
+      { src: "assets/img/recuerdo9.jpg", caption: "Nuestro deseo 🙏" },
+      { src: "assets/img/recuerdo10.jpg", caption: "Pasando el rato juntos 🍻", tag: "aventura" },
+      { src: "assets/img/recuerdo11.jpg", caption: "Un beso inesperado 😘", tag: "romantico" },
+      { src: "assets/img/recuerdo12.jpg", caption: "Amanecer contigo 🌅" },
+      { src: "assets/img/recuerdo13.jpg", caption: "Quilla City🕺" },
+      { src: "assets/img/recuerdo14.jpg", caption: "Noche en Familia" },
+      { src: "assets/img/recuerdo15.jpg", caption: "Noche de juegos y diversión 🎲" },
+      { src: "assets/img/recuerdo16.jpg", caption: "Nuestra película favorita juntos 🎬" },
+      { src: "assets/img/recuerdo17.jpg", caption: "Amanecer contigo 🌅" },
+      { src: "assets/img/recuerdo18.jpg", caption: "Nuestro rincón favorito ❤️" },
+      { src: "assets/img/recuerdo19.jpg", caption: "Estar a tu lado" },
+      { src: "assets/img/recuerdo20.jpg", caption: "Tus ojos son mis estrellas" },
+      { src: "assets/img/recuerdo21.jpg", caption: "Mi alma esta contigo" },
+      { src: "assets/img/recuerdo22.jpg", caption: "Eres mi felicidad" },
+      { src: "assets/img/recuerdo23.jpg", caption: "Mar, arena y tus Besos ❤️" },
+      { src: "assets/img/recuerdo24.jpg", caption: "Un día de sorpresas 🎉" },
+      { src: "assets/img/recuerdo25.jpg", caption: "Amor con altura 📸" },
+      { src: "assets/img/recuerdo26.jpg", caption: "Un día solo para nosotros 🥰" },
+      { src: "assets/img/recuerdo27.jpg", caption: "El mejor final feliz... ¡contigo! 💍" }
+    ];
+    let filteredImages = imagesData;
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const filter = btn.dataset.filter;
+        filteredImages = filter === "all" ? imagesData : imagesData.filter(img => img.tag === filter);
+        images.length = 0;
+        filteredImages.forEach(img => images.push(img));
+        current = 0;
+        showImage(0);
+      });
+    });
+
+    // Timeline interactivo de hitos
+    const timelineData = [
+      { fecha: "20 Oct 2024", evento: "Primer día juntos" },
+      { fecha: "14 Feb 2025", evento: "Primer San Valentín" },
+      { fecha: "10 Mar 2025", evento: "Viaje a la playa" },
+      { fecha: "20 May 2024", evento: "7 meses de amor" }
+    ];
+    const timelineList = document.getElementById('timeline-list');
+    timelineList.innerHTML = '';
+    timelineData.forEach(item => {
+      const li = document.createElement('li');
+      li.className = "mb-4 pl-4 border-l-4 border-pink-300 relative";
+      li.innerHTML = `<span class="absolute -left-3 top-1 w-4 h-4 bg-pink-400 rounded-full border-2 border-white"></span>
+        <span class="font-bold text-pink-700">${item.fecha}</span>
+        <span class="block text-pink-500">${item.evento}</span>`;
+      timelineList.appendChild(li);
+    });
+
+    // Modo noche sin velas
+    const nightBtn = document.getElementById('night-mode-btn');
+    let nightMode = false;
+    nightBtn.addEventListener('click', () => {
+      nightMode = !nightMode;
+      document.body.classList.toggle('night-mode', nightMode);
+      nightBtn.textContent = nightMode ? "☀️" : "🌙";
+    });
+
+    // Sonido de latido para el botón de corazón
+    const heartBtn = document.getElementById('love-heart-btn');
+    const heartbeatAudio = document.getElementById('heartbeat-audio');
+    let isPlaying = false;
+
+    heartBtn.addEventListener('click', function() {
+      this.classList.add('animate-ping');
+      setTimeout(() => this.classList.remove('animate-ping'), 600);
+
+      if (!isPlaying) {
+        heartbeatAudio.currentTime = 0;
+        heartbeatAudio.play();
+        isPlaying = true;
+        heartBtn.classList.add('ring-4', 'ring-pink-300');
+      } else {
+        heartbeatAudio.pause();
+        isPlaying = false;
+        heartBtn.classList.remove('ring-4', 'ring-pink-300');
+      }
+    });
+
+    heartbeatAudio.addEventListener('ended', () => {
+      isPlaying = false;
+      heartBtn.classList.remove('ring-4', 'ring-pink-300');
+    });
+    heartbeatAudio.addEventListener('pause', () => {
+      isPlaying = false;
+      heartBtn.classList.remove('ring-4', 'ring-pink-300');
+    });
+
+    // Loader de transición al ir a login.html (carta secreta)
+    const secretLetterBtn = document.getElementById('secret-letter-btn');
+    if (secretLetterBtn) {
+      const loader = document.getElementById('love-loader');
+      secretLetterBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        loader.style.display = "flex";
+        loader.classList.remove("opacity-0", "pointer-events-none");
+        setTimeout(() => loader.classList.add("opacity-100"), 10);
+
+        // Paleta de colores de corazones (gama rosa/rojo)
+        const heartColors = [
+          "#fbcfe8", "#f9a8d4", "#f472b6", "#ec4899", "#db2777", "#be185d"
+        ];
+        const maxHearts = 11; // Reducido para menos corazones
+
+        // Fondo de corazones blancos
+        const heartsBg = document.getElementById('hearts-bg');
+        heartsBg.innerHTML = "";
+        for (let i = 0; i < maxHearts; i++) {
+          const heart = document.createElement("span");
+          heart.textContent = "❤";
+          heart.style.fontSize = "1.3rem";
+          heart.style.marginRight = "2px";
+          heart.style.color = "#fff";
+          heart.style.opacity = "0.5";
+          heartsBg.appendChild(heart);
+        }
+
+        // Barra de corazones de progreso
+        let percent = 0;
+        const heartsBar = document.getElementById('hearts-bar');
+        const lovePercent = document.getElementById('love-percent');
+        heartsBar.style.width = "0%";
+        lovePercent.innerText = "0%";
+        heartsBar.innerHTML = "";
+
+        // Para 6 segundos de duración total (6000ms), con incremento cada 60ms
+        const interval = setInterval(() => {
+          percent += 1; // 100 pasos * 60ms = 6000ms
+          if (percent > 100) percent = 100;
+          lovePercent.innerText = `${percent}%`;
+          heartsBar.style.width = `${percent}%`;
+
+          // Corazones de progreso
+          heartsBar.innerHTML = "";
+          const heartsToShow = Math.round((percent / 100) * maxHearts);
+          for (let i = 0; i < heartsToShow; i++) {
+            const heart = document.createElement("span");
+            heart.textContent = "❤";
+            heart.style.fontSize = "1.3rem";
+            heart.style.marginRight = "2px";
+            const colorIdx = Math.floor(i / maxHearts * (heartColors.length - 1));
+            heart.style.color = heartColors[colorIdx];
+            if (i === heartsToShow - 1 && percent < 100) {
+              heart.style.transform = "scale(1.3)";
+              setTimeout(() => { heart.style.transform = "scale(1)"; }, 150);
+            }
+            heartsBar.appendChild(heart);
+          }
+
+          if (percent >= 100) {
+            clearInterval(interval);
+            setTimeout(() => {
+              loader.classList.remove("opacity-100");
+              loader.classList.add("opacity-0");
+              setTimeout(() => {
+                loader.style.display = "none";
+                window.location.href = "login.html";
+              }, 400);
+            }, 400);
+          }
+        }, 60); // 60ms * 100 = 6000ms (6 segundos)
+      });
+    }
+  </script>
+</body>
+</html>

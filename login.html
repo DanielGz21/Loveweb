@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>💌 Carta Secreta</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      min-height: 100vh;
+      background: radial-gradient(ellipse at top left, #ffe4ef 0%, #f9a8d4 60%, #e75480 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .glass {
+      background: rgba(255,255,255,0.7);
+      box-shadow: 0 8px 32px 0 rgba(231,84,128,0.25);
+      backdrop-filter: blur(8px);
+      border-radius: 2rem;
+      border: 1.5px solid rgba(249,168,212,0.25);
+    }
+    .login-icon {
+      color: #e75480;
+    }
+    .login-input:focus {
+      border-color: #e75480;
+      box-shadow: 0 0 0 2px #f9a8d4;
+    }
+    .login-btn {
+      background: linear-gradient(90deg, #e75480 0%, #f9a8d4 100%);
+      color: #fff;
+      font-weight: 600;
+      letter-spacing: 1px;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .login-btn:hover {
+      background: linear-gradient(90deg, #f9a8d4 0%, #e75480 100%);
+      transform: scale(1.03);
+    }
+    .error-msg {
+      color: #e75480;
+      font-size: 0.95em;
+      margin-top: 1rem;
+      text-align: center;
+    }
+    /* Loader de corazones estilo index.html */
+    #love-loader {
+      display: none;
+    }
+    @media (max-width: 640px) {
+      body {
+        padding: 0;
+        align-items: flex-start;
+        justify-content: flex-start;
+      }
+      .glass {
+        border-radius: 1.2rem;
+        padding: 1.5rem !important;
+        margin: 0.5rem;
+        width: 100vw !important;
+        min-width: 0 !important;
+        max-width: 100vw !important;
+      }
+      .w-24, .h-24 {
+        width: 4.5rem !important;
+        height: 4.5rem !important;
+      }
+      .text-3xl {
+        font-size: 1.7rem !important;
+      }
+      .text-lg {
+        font-size: 1.05rem !important;
+      }
+      .w-80 {
+        width: 95vw !important;
+      }
+      #love-loader {
+        padding: 0 0.5rem;
+      }
+    }
+    @media (max-width: 400px) {
+      .glass {
+        padding: 0.7rem !important;
+      }
+      .w-24, .h-24 {
+        width: 3.2rem !important;
+        height: 3.2rem !important;
+      }
+      .text-3xl {
+        font-size: 1.2rem !important;
+      }
+      .text-lg {
+        font-size: 0.95rem !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Loader de corazones igual al de index.html -->
+  <div id="love-loader" class="fixed inset-0 flex flex-col items-center justify-center bg-pink-50 bg-opacity-95 z-[9999] transition-opacity duration-500 opacity-0 pointer-events-none">
+    <h2 class="text-5xl font-extrabold text-red-500 mb-6 tracking-widest text-center">TE AMO</h2>
+    <div class="relative w-80 max-w-full mb-4">
+      <div class="w-full h-8 rounded-full border-4 border-red-300 px-2 bg-white overflow-hidden relative flex items-center">
+        <div id="hearts-bar" class="flex items-center h-full absolute left-0 top-0 transition-all duration-700" style="height: 100%; width: 0%; z-index:2;"></div>
+        <div id="hearts-bg" class="absolute left-0 top-0 w-full h-full flex items-center z-0"></div>
+        <span id="love-percent" class="absolute right-4 text-red-500 font-bold z-10">0%</span>
+      </div>
+    </div>
+    <span class="text-xl text-red-400 tracking-widest mt-2 animate-pulse text-center">LOADING...</span>
+  </div>
+
+  <main class="w-full flex items-center justify-center min-h-screen">
+    <section class="glass max-w-md w-full p-10 flex flex-col items-center">
+      <div class="flex flex-col items-center mb-8">
+        <div class="w-24 h-24 rounded-full bg-pink-100 flex items-center justify-center mb-4 shadow-lg overflow-hidden">
+          <img src="assets/img/sheyla.jpg" alt="Perfil de Sheyla" class="w-full h-full object-cover" />
+        </div>
+        <h2 class="text-3xl font-extrabold text-pink-700 mb-2 text-center">Welcome Sheyla</h2>
+        <p class="text-pink-600 text-base text-center">Ingresa las credenciales para continuar</p>
+      </div>
+      <form id="loginForm" class="w-full flex flex-col gap-6" autocomplete="off" novalidate>
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2">
+            <svg class="w-5 h-5 login-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 7.5v0a4.5 4.5 0 11-9 0v0a4.5 4.5 0 019 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 19.5a8.25 8.25 0 0116.5 0v.75a.75.75 0 01-.75.75h-15a.75.75 0 01-.75-.75V19.5z" />
+            </svg>
+          </span>
+          <input
+            type="text"
+            id="username"
+            placeholder="Tu Nombre"
+            class="login-input w-full pl-10 pr-4 py-3 rounded-xl border border-pink-200 focus:outline-none transition"
+            autocomplete="off"
+            required
+            aria-label="Usuario"
+          />
+        </div>
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2">
+            <svg class="w-5 h-5 login-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V7.5a4.5 4.5 0 10-9 0v3a4.5 4.5 0 009 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 19.5a8.25 8.25 0 0116.5 0v.75a.75.75 0 01-.75.75h-15a.75.75 0 01-.75-.75V19.5z" />
+            </svg>
+          </span>
+          <input
+            type="password"
+            id="password"
+            placeholder="Constraseña"
+            class="login-input w-full pl-10 pr-4 py-3 rounded-xl border border-pink-200 focus:outline-none transition"
+            required
+            aria-label="Contraseña"
+            aria-describedby="passwordHelp"
+          />
+        </div>
+        <button
+          type="submit"
+          class="login-btn w-full py-3 rounded-xl mt-2 shadow-lg text-lg"
+        >
+          Entrar
+        </button>
+        <div id="error" class="error-msg hidden">
+          Ups... ¡La palabra secreta no es correcta!
+        </div>
+      </form>
+      <div class="mt-6 text-center">
+        <a href="index.html" class="text-pink-700 hover:underline">Volver al inicio</a>
+      </div>
+    </section>
+  </main>
+  <script>
+    // Loader de corazones igual al de index.html
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const password = document.getElementById('password').value.trim().toLowerCase();
+      const errorDiv = document.getElementById('error');
+      const loveLoader = document.getElementById('love-loader');
+      const heartsBar = document.getElementById('hearts-bar');
+      const lovePercent = document.getElementById('love-percent');
+      const heartsBg = document.getElementById('hearts-bg');
+      errorDiv.classList.add("hidden");
+      loveLoader.style.display = "flex";
+      loveLoader.classList.remove("opacity-0", "pointer-events-none");
+      setTimeout(() => loveLoader.classList.add("opacity-100"), 10);
+
+      // Paleta de colores de corazones (gama rosa/rojo)
+      const heartColors = [
+        "#fbcfe8", "#f9a8d4", "#f472b6", "#ec4899", "#db2777", "#be185d"
+      ];
+      const maxHearts = 15;
+      const heartFontSizeRem = 1.3;
+      const heartMarginPx = 2;
+
+      // Fondo de corazones blancos
+      heartsBg.innerHTML = "";
+      for (let i = 0; i < maxHearts; i++) {
+        const heart = document.createElement("span");
+        heart.textContent = "❤";
+        heart.style.fontSize = `${heartFontSizeRem}rem`;
+        heart.style.marginRight = `${heartMarginPx}px`;
+        heart.style.color = "#fff";
+        heart.style.opacity = "0.5";
+        heartsBg.appendChild(heart);
+      }
+
+      // Barra de corazones de progreso
+      let percent = 0;
+      heartsBar.style.width = "0%";
+      lovePercent.innerText = "0%";
+      heartsBar.innerHTML = "";
+
+      function getMaxHeartsFit(containerWidthPx) {
+        // Calcula cuántos corazones caben realmente en el contenedor
+        const remInPx = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+        const heartWidthPx = heartFontSizeRem * remInPx + heartMarginPx;
+        return Math.max(1, Math.floor((containerWidthPx - 8) / heartWidthPx)); // 8px de margen de seguridad
+      }
+
+      if (password === "teamo") {
+        const barContainer = heartsBar.parentElement;
+        // Espera a que el loader esté visible para obtener el ancho real
+        setTimeout(() => {
+          const containerWidth = barContainer.offsetWidth || 320;
+          // ↓↓↓ RESTA 1 CORAZÓN A LA BARRA DE PROGRESO ↓↓↓
+          const heartsToShow = Math.max(1, getMaxHeartsFit(containerWidth) - 1);
+          // Fondo de corazones también debe coincidir
+          heartsBg.innerHTML = "";
+          for (let i = 0; i < heartsToShow; i++) {
+            const heart = document.createElement("span");
+            heart.textContent = "❤";
+            heart.style.fontSize = `${heartFontSizeRem}rem`;
+            heart.style.marginRight = `${heartMarginPx}px`;
+            heart.style.color = "#fff";
+            heart.style.opacity = "0.5";
+            heartsBg.appendChild(heart);
+          }
+
+          const remInPx = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+          const heartWidthPx = heartFontSizeRem * remInPx + heartMarginPx;
+          const maxBarWidth = heartsToShow * heartWidthPx;
+
+          const interval = setInterval(() => {
+            percent += 1;
+            if (percent > 100) percent = 100;
+            lovePercent.innerText = `${percent}%`;
+
+            // Ajusta el ancho de la barra proporcionalmente
+            heartsBar.style.width = `${(percent / 100) * maxBarWidth}px`;
+
+            // Corazones de progreso
+            heartsBar.innerHTML = "";
+            const heartsFilled = Math.round((percent / 100) * heartsToShow);
+            for (let i = 0; i < heartsFilled; i++) {
+              const heart = document.createElement("span");
+              heart.textContent = "❤";
+              heart.style.fontSize = `${heartFontSizeRem}rem`;
+              heart.style.marginRight = `${heartMarginPx}px`;
+              const colorIdx = Math.floor(i / heartsToShow * (heartColors.length - 1));
+              heart.style.color = heartColors[colorIdx];
+              if (i === heartsFilled - 1 && percent < 100) {
+                heart.style.transform = "scale(1.3)";
+                setTimeout(() => { heart.style.transform = "scale(1)"; }, 150);
+              }
+              heartsBar.appendChild(heart);
+            }
+
+            if (percent >= 100) {
+              clearInterval(interval);
+              setTimeout(() => {
+                loveLoader.classList.remove("opacity-100");
+                loveLoader.classList.add("opacity-0");
+                setTimeout(() => {
+                  loveLoader.style.display = "none";
+                  window.location.href = "carta.html";
+                }, 400);
+              }, 400);
+            }
+          }, 60);
+        }, 50); // Espera a que el loader se muestre y el ancho sea correcto
+      } else {
+        loveLoader.classList.remove("opacity-100");
+        loveLoader.classList.add("opacity-0");
+        setTimeout(() => {
+          loveLoader.style.display = "none";
+          errorDiv.classList.remove("hidden");
+        }, 500);
+      }
+    });
+  </script>
+</body>
+</html>
