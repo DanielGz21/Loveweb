@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="description" content="Carta de amor interactiva y personalizada para celebrar nuestro aniversario.">
   <style>
     .indicator-dot {
       width: 10px;
@@ -368,19 +369,59 @@
         transform: scale(1.1);
       }
     }
+    .svg-heart-anim {
+      width: 48px;
+      height: 48px;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 0.5em;
+    }
+    .theme-btn {
+      border: 2px solid #f472b6;
+      background: #fff;
+      color: #f472b6;
+      border-radius: 9999px;
+      padding: 0.3em 1em;
+      margin: 0 0.2em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+    }
+    .theme-btn.active, .theme-btn:focus {
+      background: #f472b6;
+      color: #fff;
+      outline: 2px solid #f472b6;
+    }
   </style>
 </head>
-<body class="bg-gradient-to-b from-pink-50 to-pink-100 text-center font-sans min-h-screen flex flex-col">
-  <main class="flex-1 w-full">
-    <!-- Encabezado -->
-    <header class="bg-pink-300 p-6 sm:p-8 shadow-lg rounded-b-lg" role="banner">
-      <h1 class="text-3xl sm:text-5xl font-extrabold text-pink-900 leading-tight break-words">💘 7 Meses de Amor 💘</h1>
-      <p class="text-pink-800 mt-2 sm:mt-3 text-base sm:text-lg max-w-xs mx-auto leading-snug">Cada momento contigo es un sueño hecho realidad.</p>
+<body class="bg-gradient-to-b from-pink-50 to-pink-100 text-center font-sans min-h-screen flex flex-col" aria-label="Página principal de LoveWeb">
+  <main class="flex-1 w-full" role="main">
+    <!-- Encabezado con SVG animado -->
+    <header class="bg-pink-300 p-6 sm:p-8 shadow-lg rounded-b-lg flex flex-col items-center" role="banner">
+      <span aria-hidden="true">
+        <svg class="svg-heart-anim" viewBox="0 0 48 48" fill="none">
+          <path d="M24 42s-12-8.35-12-18A8 8 0 0124 10a8 8 0 0112 14c0 9.65-12 18-12 18z">
+            <animate attributeName="fill" values="#f472b6;#db2777;#f472b6" dur="2s" repeatCount="indefinite"/>
+          </path>
+        </svg>
+      </span>
+      <h1 class="text-3xl sm:text-5xl font-extrabold text-pink-900 leading-tight break-words inline-block" tabindex="0">
+        7 Meses de Amor
+      </h1>
+      <!-- Frase romántica con efecto máquina de escribir -->
+      <p id="frase-romantica" class="text-pink-800 mt-2 sm:mt-3 text-base sm:text-lg max-w-xs mx-auto leading-snug handwriting" tabindex="0" aria-live="polite"></p>
     </header>
+
+    <!-- Selector de tema/fondo -->
+    <div class="mt-3 flex justify-center gap-2" aria-label="Selector de fondo">
+      <button class="theme-btn active" data-theme="pink" tabindex="0">Rosa</button>
+      <button class="theme-btn" data-theme="blue" tabindex="0">Azul</button>
+      <button class="theme-btn" data-theme="night" tabindex="0">Noche</button>
+    </div>
 
     <!-- Frase romántica -->
     <p class="mt-4 text-pink-500 text-base sm:text-xl handwriting max-w-xs mx-auto leading-snug tracking-wide break-words">
-      "Contigo, cada día es el mejor de mi vida."
+      "Personaliza tu experiencia con un fondo de tu elección y disfruta de una carta de amor interactiva."
     </p>
 
     <!-- Fondo animado con emojis -->
@@ -526,7 +567,7 @@
     </div>
 
     <!-- Loader de amor para transición a carta secreta -->
-    <div id="love-loader" class="fixed inset-0 flex flex-col items-center justify-center bg-pink-50 bg-opacity-95 z-[9999] transition-opacity duration-500 opacity-0 pointer-events-none" style="display:none;">
+    <div id="love-loader" class="fixed inset-0 flex flex-col items-center justify-center bg-pink-50 bg-opacity-95 z-[9999] transition-opacity duration-500 opacity-0 pointer-events-none" style="display:none;" role="alert" aria-live="assertive">
       <h2 class="text-5xl font-extrabold text-red-500 mb-6 tracking-widest text-center">TE AMO</h2>
       <div class="relative w-80 max-w-full mb-4">
         <div class="w-full h-8 rounded-full border-4 border-red-300 px-2 bg-white overflow-hidden relative flex items-center">
@@ -540,6 +581,33 @@
   </main>
 
   <script>
+    // Efecto máquina de escribir en la frase romántica
+    const frase = '"Contigo, cada día es el mejor de mi vida."';
+    const fraseElem = document.getElementById('frase-romantica');
+    let i = 0;
+    function escribirFrase() {
+      if (i < frase.length) {
+        fraseElem.textContent += frase.charAt(i);
+        i++;
+        setTimeout(escribirFrase, 45);
+      }
+    }
+    escribirFrase();
+
+    // Selector de tema/fondo
+    const themeBtns = document.querySelectorAll('.theme-btn');
+    themeBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        themeBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const theme = btn.dataset.theme;
+        document.body.classList.remove('night-mode', 'theme-blue', 'theme-pink');
+        if (theme === 'night') document.body.classList.add('night-mode');
+        else if (theme === 'blue') document.body.style.background = 'linear-gradient(135deg, #a5b4fc 0%, #f0f9ff 100%)';
+        else document.body.style.background = '';
+      });
+    });
+
     // Carrusel
     const images = [
       { src: "assets/img/recuerdo1.jpg", caption: "Nuestro primer 'te amo' 💖" },
@@ -742,10 +810,10 @@
       { src: "assets/img/recuerdo6.jpg", caption: "Noche de locura 🤪", tag: "aventura" },
       { src: "assets/img/recuerdo7.jpg", caption: "Mi mejor compañia 🫶" },
       { src: "assets/img/recuerdo8.jpg", caption: "Nuestro rincón favorito ❤️", tag: "romantico" },
-      { src: "assets/img/recuerdo9.jpg", caption: "Nuestro deseo 🙏" },
+      { src: "assets/img/recuerdo9.jpg", caption: "Nuestro deseo 🙏", tag: "romantico" },
       { src: "assets/img/recuerdo10.jpg", caption: "Pasando el rato juntos 🍻", tag: "aventura" },
       { src: "assets/img/recuerdo11.jpg", caption: "Un beso inesperado 😘", tag: "romantico" },
-      { src: "assets/img/recuerdo12.jpg", caption: "Amanecer contigo 🌅" },
+      { src: "assets/img/recuerdo12.jpg", caption: "Amanecer contigo 🌅", tag: "familia" },
       { src: "assets/img/recuerdo13.jpg", caption: "Quilla City🕺" },
       { src: "assets/img/recuerdo14.jpg", caption: "Noche en Familia" },
       { src: "assets/img/recuerdo15.jpg", caption: "Noche de juegos y diversión 🎲" },
@@ -906,6 +974,22 @@
         }, 60); // 60ms * 100 = 6000ms (6 segundos)
       });
     }
+
+    // Service Worker para cache offline
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+
+    // Accesibilidad: roles y tabindex ya agregados en HTML
+    // (Asegúrate de que todos los botones tengan tabindex="0" y roles donde corresponda)
+
+    // El resto de tu JS (carrusel, contador, constelación, filtros, timeline, night mode, loader, etc.) permanece igual.
+    // Asegúrate de que las imágenes tengan <source type="image/webp"> y loading="lazy"
+    // Ejemplo para el carrusel:
+    // <picture>
+    //   <source srcset="assets/img/recuerdo1.webp" type="image/webp">
+    //   <img src="assets/img/recuerdo1.jpg" alt="Nuestro primer 'te amo' 💖" loading="lazy" ... >
+    // </picture>
   </script>
 </body>
 </html>

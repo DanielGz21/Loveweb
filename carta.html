@@ -9,12 +9,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@3.3.0/tsparticles.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
   <style>
     body {
       font-family: 'Inter', system-ui, sans-serif;
       background: linear-gradient(135deg, #ffe4ec 0%, #f8fafc 100%);
       min-height: 100vh;
       overflow-x: hidden;
+      transition: background 0.5s;
     }
     .handwriting { font-family: 'Dancing Script', cursive; }
     .fade-in {
@@ -117,6 +120,7 @@
       transition: opacity 0.5s;
       opacity: 0;
       pointer-events: none;
+      overflow: hidden;
     }
     #love-loader.show {
       opacity: 1;
@@ -173,9 +177,42 @@
         transform: scale(1.1);
       }
     }
+    /* Tema noche */
+    body.night-mode {
+      background: linear-gradient(135deg, #232946 0%, #181c2a 100%) !important;
+      color: #e0e7ef !important;
+    }
+    .theme-btn {
+      border: 2px solid #f472b6;
+      background: #fff;
+      color: #f472b6;
+      border-radius: 9999px;
+      padding: 0.3em 1em;
+      margin: 0 0.2em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+    }
+    .theme-btn.active, .theme-btn:focus {
+      background: #f472b6;
+      color: #fff;
+      outline: 2px solid #f472b6;
+    }
+    @media (max-width: 640px) {
+      .theme-btn { font-size: 0.95em; padding: 0.2em 0.7em; }
+    }
+    #particles-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen px-2 sm:px-6 py-3 bg-gradient-to-b from-pink-100 via-white to-pink-50 text-center">
+
+  <!-- Partículas de corazones -->
+  <div id="particles-bg"></div>
 
   <!-- Loader de amor (igual a index.html) -->
   <div id="love-loader">
@@ -190,17 +227,27 @@
     <span class="text-xl text-red-400 tracking-widest mt-2 animate-pulse text-center">LOADING...</span>
   </div>
 
+  <!-- Selector de tema/fondo -->
+  <div class="mb-4 flex justify-center gap-2" aria-label="Selector de fondo">
+    <button class="theme-btn active" data-theme="pink" tabindex="0">Rosa</button>
+    <button class="theme-btn" data-theme="blue" tabindex="0">Azul</button>
+    <button class="theme-btn" data-theme="night" tabindex="0">Noche</button>
+  </div>
+
+  <!-- Nombre personalizado -->
+  <div id="user-greeting" class="text-lg text-pink-700 font-bold mb-2"></div>
+
   <!-- Corazones flotando -->
   <div id="hearts-container"></div>
 
   <!-- Sobre animado -->
-  <div class="envelope-outer fade-in">
+  <div class="envelope-outer fade-in" aria-label="Sobre animado">
     <div id="flap" class="envelope-flap"></div>
     <div class="envelope-base"></div>
   </div>
 
   <!-- Animación de carta -->
-  <div id="envelope" class="flex flex-col items-center opacity-0 fade-in">
+  <div id="envelope" class="flex flex-col items-center opacity-0 fade-in" aria-label="Carta de amor">
     <div class="w-20 h-20 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-pink-300 shadow-lg mb-4 sm:mb-6 animate-pulse hover:scale-105 transition-transform duration-300">
       <img src="assets/img/carta.jpg" alt="Nosotros" class="w-full h-full object-cover" />
     </div>
@@ -238,8 +285,61 @@
   <a id="back-link" href="index.html" class="mt-6 sm:mt-8 text-pink-600 hover:underline text-base sm:text-lg transition duration-300">⟵ Volver al inicio</a>
 
   <script>
-    // Corazones flotando
+    // Partículas de corazones con tsParticles
+    tsParticles.load("particles-bg", {
+      fullScreen: { enable: false },
+      background: { color: "transparent" },
+      particles: {
+        number: { value: 30 },
+        color: { value: ["#f472b6", "#db2777", "#fff", "#be185d"] },
+        shape: { type: "heart" },
+        opacity: { value: 0.5 },
+        size: { value: 18, random: { enable: true, minimumValue: 8 } },
+        move: { enable: true, speed: 1.2, direction: "top", outModes: { default: "out" } }
+      }
+    });
+
+    // Tema personalizado con localStorage
+    const themeBtns = document.querySelectorAll('.theme-btn');
+    function saveTheme(theme) {
+      localStorage.setItem('lovewebTheme', theme);
+    }
+    function loadTheme() {
+      const theme = localStorage.getItem('lovewebTheme');
+      if (theme) {
+        themeBtns.forEach(b => b.classList.remove('active'));
+        const btn = Array.from(themeBtns).find(b => b.dataset.theme === theme);
+        if (btn) btn.classList.add('active');
+        document.body.classList.remove('night-mode');
+        if (theme === 'night') document.body.classList.add('night-mode');
+        else if (theme === 'blue') document.body.style.background = 'linear-gradient(135deg, #a5b4fc 0%, #f0f9ff 100%)';
+        else document.body.style.background = '';
+      }
+    }
+    themeBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        themeBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const theme = btn.dataset.theme;
+        saveTheme(theme);
+        document.body.classList.remove('night-mode');
+        if (theme === 'night') document.body.classList.add('night-mode');
+        else if (theme === 'blue') document.body.style.background = 'linear-gradient(135deg, #a5b4fc 0%, #f0f9ff 100%)';
+        else document.body.style.background = '';
+      });
+    });
+    loadTheme();
+
+    // Mostrar nombre personalizado si existe en localStorage
+    const userGreeting = document.getElementById('user-greeting');
+    const user = localStorage.getItem('lovewebUser');
+    if (user) {
+      userGreeting.textContent = `¡Esta carta es para ti, ${user.charAt(0).toUpperCase() + user.slice(1)}!`;
+    }
+
+    // Corazones flotando con sonido
     const hearts = ["❤", "💖", "💕", "💘", "💝", "💗", "💓", "💞", "💟"];
+    const heartSound = new Howl({ src: ['assets/audio/heart-pop.mp3'], volume: 0.25 });
     function createHeart() {
       const heart = document.createElement('span');
       heart.className = 'heart';
@@ -247,10 +347,20 @@
       heart.style.left = Math.random() * 90 + 'vw';
       heart.style.animationDuration = (5 + Math.random() * 3) + 's';
       heart.style.fontSize = (1.3 + Math.random() * 1.7) + 'rem';
+      heart.setAttribute('tabindex', '0');
+      heart.setAttribute('aria-label', 'Corazón flotante');
       heart.addEventListener('click', function(e) {
         e.stopPropagation();
         showExplosionMessage(heart);
+        heartSound.play();
         heart.remove();
+      });
+      heart.addEventListener('keydown', function(e) {
+        if (e.key === "Enter" || e.key === " ") {
+          showExplosionMessage(heart);
+          heartSound.play();
+          heart.remove();
+        }
       });
       document.getElementById('hearts-container').appendChild(heart);
       setTimeout(() => heart.remove(), 9000);
@@ -292,11 +402,13 @@
       }, 800);
     });
 
-    // Audio romántico
+    // Audio romántico con feedback visual
     const playBtn = document.getElementById('play-audio');
     const audio = document.getElementById('romantic-audio');
     const audioIconPath = document.getElementById('audio-icon-path');
+    const audioPop = new Howl({ src: ['assets/audio/audio-pop.mp3'], volume: 0.18 });
     playBtn.addEventListener('click', function() {
+      audioPop.play();
       if (audio.paused) {
         audio.play();
         this.querySelector('span').textContent = 'Pausar';
@@ -377,6 +489,28 @@
           }, 400);
         }
       }, 60);
+    }
+
+    // Accesibilidad: focus en el sobre al abrir
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        document.querySelector('.envelope-outer').setAttribute('tabindex', '0');
+        document.querySelector('.envelope-outer').setAttribute('aria-label', 'Sobre animado, pulsa Enter para abrir');
+        document.querySelector('.envelope-outer').focus();
+        document.querySelector('.envelope-outer').addEventListener('keydown', function(e) {
+          if (e.key === "Enter" || e.key === " ") {
+            document.getElementById('flap').classList.add('open');
+            setTimeout(() => {
+              document.getElementById('envelope').classList.add('open');
+            }, 900);
+          }
+        });
+      }, 900);
+    });
+
+    // Service Worker para cache offline (opcional)
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
     }
   </script>
 </body>

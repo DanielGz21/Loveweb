@@ -3,18 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title> Iniciar Sesion</title>
+  <title>Iniciar Sesión</title>
   <link rel="icon" href="assets/img/corazon.ico" type="image/x-icon" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="description" content="Acceso privado a la carta de amor interactiva.">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+  <!-- tsParticles para partículas en el loader -->
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@3.3.0/tsparticles.bundle.min.js"></script>
   <style>
+    :root {
+      --love-pink: #f472b6;
+      --love-dark: #db2777;
+    }
     body {
       min-height: 100vh;
       background: radial-gradient(ellipse at top left, #ffe4ef 0%, #f9a8d4 60%, #e75480 100%);
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: background 0.5s;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+    body.night-mode {
+      background: linear-gradient(135deg, #232946 0%, #181c2a 100%) !important;
+      color: #e0e7ef !important;
     }
     .glass {
       background: rgba(255,255,255,0.7);
@@ -35,11 +49,17 @@
       color: #fff;
       font-weight: 600;
       letter-spacing: 1px;
-      transition: background 0.3s, transform 0.2s;
+      transition: background 0.3s, transform 0.2s, opacity 0.2s;
+      opacity: 1;
     }
-    .login-btn:hover {
+    .login-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .login-btn:hover, .login-btn:focus {
       background: linear-gradient(90deg, #f9a8d4 0%, #e75480 100%);
       transform: scale(1.03);
+      outline: 2px solid #f472b6;
     }
     .error-msg {
       color: #e75480;
@@ -47,9 +67,66 @@
       margin-top: 1rem;
       text-align: center;
     }
-    /* Loader de corazones estilo index.html */
+    .svg-heart-anim {
+      width: 40px;
+      height: 40px;
+      display: inline-block;
+      vertical-align: middle;
+      margin-bottom: 0.5em;
+      transition: transform 0.4s cubic-bezier(.68,-0.55,.27,1.55);
+    }
+    .svg-heart-anim.spin {
+      animation: spinHeart 1.2s linear;
+    }
+    @keyframes spinHeart {
+      0% { transform: scale(1) rotate(0deg);}
+      50% { transform: scale(1.4) rotate(180deg);}
+      100% { transform: scale(1) rotate(360deg);}
+    }
+    .theme-btn {
+      border: 2px solid #f472b6;
+      background: #fff;
+      color: #f472b6;
+      border-radius: 9999px;
+      padding: 0.3em 1em;
+      margin: 0 0.2em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+    }
+    .theme-btn.active, .theme-btn:focus {
+      background: #f472b6;
+      color: #fff;
+      outline: 2px solid #f472b6;
+    }
+    #loader-particles {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
     #love-loader {
+      overflow: hidden;
+    }
+    .help-text {
+      font-size: 0.95em;
+      color: #be185d;
+      margin-top: 0.2em;
+      text-align: left;
+      margin-left: 0.5em;
+    }
+    #welcome-msg {
       display: none;
+      font-size: 1.2rem;
+      color: #db2777;
+      font-weight: bold;
+      margin-top: 2rem;
+      text-align: center;
+      animation: fadeInWelcome 1s;
+    }
+    @keyframes fadeInWelcome {
+      from { opacity: 0; transform: translateY(20px);}
+      to { opacity: 1; transform: translateY(0);}
     }
     @media (max-width: 640px) {
       body {
@@ -97,32 +174,56 @@
         font-size: 0.95rem !important;
       }
     }
+    .page-fade {
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .page-fade-in {
+      opacity: 1;
+    }
   </style>
 </head>
-<body>
-  <!-- Loader de corazones igual al de index.html -->
-  <div id="love-loader" class="fixed inset-0 flex flex-col items-center justify-center bg-pink-50 bg-opacity-95 z-[9999] transition-opacity duration-500 opacity-0 pointer-events-none">
-    <h2 class="text-5xl font-extrabold text-red-500 mb-6 tracking-widest text-center">TE AMO</h2>
-    <div class="relative w-80 max-w-full mb-4">
+<body class="page-fade">
+  <!-- Loader de corazones con partículas -->
+  <div id="love-loader" class="fixed inset-0 flex flex-col items-center justify-center bg-pink-50 bg-opacity-95 z-[9999] transition-opacity duration-500 opacity-0 pointer-events-none" role="alert" aria-live="assertive">
+    <div id="loader-particles"></div>
+    <h2 class="text-5xl font-extrabold text-red-500 mb-6 tracking-widest text-center" style="z-index:2;">TE AMO</h2>
+    <div class="relative w-80 max-w-full mb-4" style="z-index:2;">
       <div class="w-full h-8 rounded-full border-4 border-red-300 px-2 bg-white overflow-hidden relative flex items-center">
         <div id="hearts-bar" class="flex items-center h-full absolute left-0 top-0 transition-all duration-700" style="height: 100%; width: 0%; z-index:2;"></div>
         <div id="hearts-bg" class="absolute left-0 top-0 w-full h-full flex items-center z-0"></div>
         <span id="love-percent" class="absolute right-4 text-red-500 font-bold z-10">0%</span>
       </div>
     </div>
-    <span class="text-xl text-red-400 tracking-widest mt-2 animate-pulse text-center">LOADING...</span>
+    <span class="text-xl text-red-400 tracking-widest mt-2 animate-pulse text-center" style="z-index:2;">LOADING...</span>
   </div>
 
-  <main class="w-full flex items-center justify-center min-h-screen">
-    <section class="glass max-w-md w-full p-10 flex flex-col items-center">
+  <main class="w-full flex items-center justify-center min-h-screen" role="main">
+    <section class="glass max-w-md w-full p-10 flex flex-col items-center" aria-label="Formulario de inicio de sesión">
       <div class="flex flex-col items-center mb-8">
+        <span aria-hidden="true">
+          <svg id="svgHeart" class="svg-heart-anim" viewBox="0 0 48 48" fill="none">
+            <path d="M24 42s-12-8.35-12-18A8 8 0 0124 10a8 8 0 0112 14c0 9.65-12 18-12 18z">
+              <animate attributeName="fill" values="#f472b6;#db2777;#f472b6" dur="2s" repeatCount="indefinite"/>
+            </path>
+          </svg>
+        </span>
         <div class="w-24 h-24 rounded-full bg-pink-100 flex items-center justify-center mb-4 shadow-lg overflow-hidden">
-          <img src="assets/img/sheyla.jpg" alt="Perfil de Sheyla" class="w-full h-full object-cover" />
+          <picture>
+            <source srcset="assets/img/sheyla.webp" type="image/webp">
+            <img src="assets/img/sheyla.jpg" alt="Perfil de Sheyla" class="w-full h-full object-cover" loading="lazy" />
+          </picture>
         </div>
-        <h2 class="text-3xl font-extrabold text-pink-700 mb-2 text-center">Welcome Sheyla</h2>
-        <p class="text-pink-600 text-base text-center">Ingresa las credenciales para continuar</p>
+        <h2 class="text-3xl font-extrabold text-pink-700 mb-2 text-center" tabindex="0">Welcome Sheyla</h2>
+        <p class="text-pink-600 text-base text-center" tabindex="0">Ingresa las credenciales para continuar</p>
       </div>
-      <form id="loginForm" class="w-full flex flex-col gap-6" autocomplete="off" novalidate>
+      <!-- Selector de tema/fondo -->
+      <div class="mb-4 flex justify-center gap-2" aria-label="Selector de fondo">
+        <button class="theme-btn active" data-theme="pink" tabindex="0">Rosa</button>
+        <button class="theme-btn" data-theme="blue" tabindex="0">Azul</button>
+        <button class="theme-btn" data-theme="night" tabindex="0">Noche</button>
+      </div>
+      <form id="loginForm" class="w-full flex flex-col gap-6" autocomplete="off" novalidate aria-label="Formulario de login">
         <div class="relative">
           <span class="absolute left-3 top-1/2 -translate-y-1/2">
             <svg class="w-5 h-5 login-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
@@ -138,7 +239,10 @@
             autocomplete="off"
             required
             aria-label="Usuario"
+            aria-describedby="usernameHelp"
+            tabindex="0"
           />
+          <div id="usernameHelp" class="help-text">Ingresa tu nombre de usuario (ej: sheyla o daniel).</div>
         </div>
         <div class="relative">
           <span class="absolute left-3 top-1/2 -translate-y-1/2">
@@ -150,44 +254,144 @@
           <input
             type="password"
             id="password"
-            placeholder="Constraseña"
-            class="login-input w-full pl-10 pr-4 py-3 rounded-xl border border-pink-200 focus:outline-none transition"
+            placeholder="Contraseña"
+            class="login-input w-full pl-10 pr-12 py-3 rounded-xl border border-pink-200 focus:outline-none transition"
             required
             aria-label="Contraseña"
             aria-describedby="passwordHelp"
+            tabindex="0"
           />
+          <!-- Mostrar/ocultar contraseña -->
+          <button type="button" id="togglePassword" tabindex="0" aria-label="Mostrar u ocultar contraseña"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-pink-400 hover:text-pink-700 focus:outline-none">
+            <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path id="eyeOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path id="eyeOpen2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              <path id="eyeClosed" style="display:none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 3l18 18M10.477 10.477A3 3 0 0112 9c1.657 0 3 1.343 3 3 0 .523-.133 1.016-.366 1.447M6.53 6.53A9.956 9.956 0 002.458 12c1.274 4.057 5.065 7 9.542 7 1.93 0 3.73-.547 5.242-1.477M17.47 17.47A9.956 9.956 0 0021.542 12c-.363-1.158-.958-2.22-1.75-3.152" />
+            </svg>
+          </button>
+          <div id="passwordHelp" class="help-text">La contraseña es un secreto de amor 😉</div>
         </div>
+        <label class="flex items-center gap-2 text-pink-700 text-sm mb-2 ml-1">
+          <input type="checkbox" id="rememberUser" class="accent-pink-500" />
+          Recordar usuario
+        </label>
         <button
           type="submit"
+          id="loginBtn"
           class="login-btn w-full py-3 rounded-xl mt-2 shadow-lg text-lg"
+          tabindex="0"
+          disabled
         >
           Entrar
         </button>
-        <div id="error" class="error-msg hidden">
+        <div id="error" class="error-msg hidden" role="alert" aria-live="assertive">
           Ups... ¡La palabra secreta no es correcta!
         </div>
       </form>
+      <div id="welcome-msg"></div>
       <div class="mt-6 text-center">
-        <a href="index.html" class="text-pink-700 hover:underline">Volver al inicio</a>
+        <a href="index.html" class="text-pink-700 hover:underline" tabindex="0">Volver al inicio</a>
       </div>
     </section>
   </main>
   <script>
-    // Loader de corazones igual al de index.html
+    // tsParticles loader animación de corazones
+    tsParticles.load("loader-particles", {
+      fullScreen: { enable: false },
+      background: { color: "transparent" },
+      particles: {
+        number: { value: 25 },
+        color: { value: ["#f472b6", "#db2777", "#fff", "#be185d"] },
+        shape: { type: "heart" },
+        opacity: { value: 0.7 },
+        size: { value: 16, random: { enable: true, minimumValue: 8 } },
+        move: { enable: true, speed: 1.5, direction: "top", outModes: { default: "out" } }
+      }
+    });
+
+    // Feedback sonoro
+    const soundOk = new Howl({ src: ['assets/audio/success.mp3'], volume: 0.3 });
+    const soundFail = new Howl({ src: ['assets/audio/fail.mp3'], volume: 0.3 });
+
+    // Usuarios y contraseñas permitidos (agrega genero: 'f' o 'm')
+    const users = [
+      { username: "sheyla", password: "teamo", nombre: "Sheyla", genero: "f" },
+      { username: "daniel", password: "teamo", nombre: "Daniel", genero: "m" }
+    ];
+
+    // Recordar usuario con localStorage
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const rememberUser = document.getElementById('rememberUser');
+    const loginBtn = document.getElementById('loginBtn');
+    const themeBtns = document.querySelectorAll('.theme-btn');
+
+    if (localStorage.getItem('lovewebUser')) {
+      usernameInput.value = localStorage.getItem('lovewebUser');
+      rememberUser.checked = true;
+    }
+
+    // Selector de tema/fondo
+    themeBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        themeBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const theme = btn.dataset.theme;
+        document.body.classList.remove('night-mode');
+        if (theme === 'night') document.body.classList.add('night-mode');
+        else if (theme === 'blue') document.body.style.background = 'linear-gradient(135deg, #a5b4fc 0%, #f0f9ff 100%)';
+        else document.body.style.background = '';
+      });
+    });
+
+    function checkFields() {
+      loginBtn.disabled = !(usernameInput.value.trim() && passwordInput.value.trim());
+    }
+    usernameInput.addEventListener('input', checkFields);
+    passwordInput.addEventListener('input', checkFields);
+
+    // Mostrar/ocultar contraseña
+    const togglePassword = document.getElementById('togglePassword');
+    const eyeOpen = document.getElementById('eyeOpen');
+    const eyeOpen2 = document.getElementById('eyeOpen2');
+    const eyeClosed = document.getElementById('eyeClosed');
+    togglePassword.addEventListener('click', () => {
+      const isVisible = passwordInput.type === 'text';
+      passwordInput.type = isVisible ? 'password' : 'text';
+      eyeOpen.style.display = isVisible ? '' : 'none';
+      eyeOpen2.style.display = isVisible ? '' : 'none';
+      eyeClosed.style.display = isVisible ? 'none' : '';
+    });
+
+    // Animación extra en el botón al hacer click
+    loginBtn.addEventListener('click', () => {
+      loginBtn.style.transform = 'scale(0.96)';
+      setTimeout(() => loginBtn.style.transform = '', 150);
+    });
+
+    // Loader y login con mensajes de error detallados y soporte email
     document.getElementById('loginForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      const password = document.getElementById('password').value.trim().toLowerCase();
+      const usernameOrEmail = usernameInput.value.trim().toLowerCase();
+      const password = passwordInput.value.trim().toLowerCase();
       const errorDiv = document.getElementById('error');
       const loveLoader = document.getElementById('love-loader');
       const heartsBar = document.getElementById('hearts-bar');
       const lovePercent = document.getElementById('love-percent');
       const heartsBg = document.getElementById('hearts-bg');
+      const svgHeart = document.getElementById('svgHeart');
+      const welcomeMsg = document.getElementById('welcome-msg');
       errorDiv.classList.add("hidden");
+      welcomeMsg.style.display = "none";
       loveLoader.style.display = "flex";
       loveLoader.classList.remove("opacity-0", "pointer-events-none");
       setTimeout(() => loveLoader.classList.add("opacity-100"), 10);
 
-      // Paleta de colores de corazones (gama rosa/rojo)
+      // Paleta de colores de corazones
       const heartColors = [
         "#fbcfe8", "#f9a8d4", "#f472b6", "#ec4899", "#db2777", "#be185d"
       ];
@@ -214,20 +418,30 @@
       heartsBar.innerHTML = "";
 
       function getMaxHeartsFit(containerWidthPx) {
-        // Calcula cuántos corazones caben realmente en el contenedor
         const remInPx = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
         const heartWidthPx = heartFontSizeRem * remInPx + heartMarginPx;
-        return Math.max(1, Math.floor((containerWidthPx - 8) / heartWidthPx)); // 8px de margen de seguridad
+        return Math.max(1, Math.floor((containerWidthPx - 8) / heartWidthPx));
       }
 
-      if (password === "teamo") {
+      // Validación de usuario y contraseña
+      const user = users.find(u => u.username === usernameOrEmail && u.password === password);
+
+      if (user) {
+        soundOk.play();
+        svgHeart.classList.add('spin');
+        setTimeout(() => svgHeart.classList.remove('spin'), 1200);
+
+        // Guardar usuario si checkbox activo
+        if (rememberUser.checked) {
+          localStorage.setItem('lovewebUser', usernameInput.value.trim());
+        } else {
+          localStorage.removeItem('lovewebUser');
+        }
+
         const barContainer = heartsBar.parentElement;
-        // Espera a que el loader esté visible para obtener el ancho real
         setTimeout(() => {
           const containerWidth = barContainer.offsetWidth || 320;
-          // ↓↓↓ RESTA 1 CORAZÓN A LA BARRA DE PROGRESO ↓↓↓
           const heartsToShow = Math.max(1, getMaxHeartsFit(containerWidth) - 1);
-          // Fondo de corazones también debe coincidir
           heartsBg.innerHTML = "";
           for (let i = 0; i < heartsToShow; i++) {
             const heart = document.createElement("span");
@@ -247,11 +461,8 @@
             percent += 1;
             if (percent > 100) percent = 100;
             lovePercent.innerText = `${percent}%`;
-
-            // Ajusta el ancho de la barra proporcionalmente
             heartsBar.style.width = `${(percent / 100) * maxBarWidth}px`;
 
-            // Corazones de progreso
             heartsBar.innerHTML = "";
             const heartsFilled = Math.round((percent / 100) * heartsToShow);
             for (let i = 0; i < heartsFilled; i++) {
@@ -275,20 +486,72 @@
                 loveLoader.classList.add("opacity-0");
                 setTimeout(() => {
                   loveLoader.style.display = "none";
-                  window.location.href = "carta.html";
+                  // Cambia aquí el mensaje de bienvenida:
+                  // Si genero es 'f' muestra "Bienvenida", si es 'm' muestra "Bienvenido"
+                  // Si no está definido, usa "Bienvenid@":
+                  const saludo = user.genero === "f" ? "¡Bienvenida" : user.genero === "m" ? "¡Bienvenido" : "¡Bienvenid@";
+                  welcomeMsg.innerHTML = `${saludo}, <span style="color:#e75480">${user.nombre}</span>!<br>Prepara tu corazón...`;
+                  welcomeMsg.style.display = "block";
+                  setTimeout(() => {
+                    welcomeMsg.style.display = "none";
+                    window.location.href = "carta.html";
+                  }, 1700);
                 }, 400);
               }, 400);
             }
           }, 60);
-        }, 50); // Espera a que el loader se muestre y el ancho sea correcto
+        }, 50);
       } else {
+        soundFail.play();
+        svgHeart.classList.add('spin');
+        setTimeout(() => svgHeart.classList.remove('spin'), 700);
+
         loveLoader.classList.remove("opacity-100");
         loveLoader.classList.add("opacity-0");
         setTimeout(() => {
           loveLoader.style.display = "none";
           errorDiv.classList.remove("hidden");
+          passwordInput.value = "";
+          checkFields();
         }, 500);
       }
+    });
+
+    // Soporte para login con email (opcional, puedes agregar un campo email en users)
+    // Ejemplo de usuario con email:
+    // { username: "daniel", email: "daniel@email.com", password: "teamo", nombre: "Daniel", genero: "m" }
+    // Y en el login, puedes permitir buscar por username o email:
+    // const user = users.find(u =>
+    //   (u.username === username || (u.email && u.email === username)) && u.password === password
+    // );
+
+    // Soporte para temas personalizados guardados en localStorage
+    function saveTheme(theme) {
+      localStorage.setItem('lovewebTheme', theme);
+    }
+    function loadTheme() {
+      const theme = localStorage.getItem('lovewebTheme');
+      if (theme) {
+        themeBtns.forEach(b => b.classList.remove('active'));
+        const btn = Array.from(themeBtns).find(b => b.dataset.theme === theme);
+        if (btn) btn.classList.add('active');
+        document.body.classList.remove('night-mode');
+        if (theme === 'night') document.body.classList.add('night-mode');
+        else if (theme === 'blue') document.body.style.background = 'linear-gradient(135deg, #a5b4fc 0%, #f0f9ff 100%)';
+        else document.body.style.background = '';
+      }
+    }
+    themeBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        saveTheme(btn.dataset.theme);
+      });
+    });
+    loadTheme();
+
+    document.body.classList.add('page-fade');
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => document.body.classList.add('page-fade-in'), 10);
+      checkFields();
     });
   </script>
 </body>
